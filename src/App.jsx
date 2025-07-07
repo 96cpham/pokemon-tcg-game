@@ -174,6 +174,11 @@ function App() {
         </div>
       </Container>
 
+      <Container maxWidth="sm" style={{ textAlign: 'center', marginTop: '20px', backgroundColor: "white", opacity: .8, borderRadius: '10px',}}>
+        <Typography variant="h5" style={{ textAlign: 'center', marginTop: '20px' }}>
+          Guess which card is more expensive by clicking on it!
+        </Typography>
+      </Container>
 
       <Button variant="contained" style={{ padding: '10px 20px', marginTop: '20px' }}
         onClick={ handleNewCards }
