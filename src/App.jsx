@@ -178,6 +178,9 @@ function App() {
         <Typography variant="h5" style={{ textAlign: 'center', marginTop: '20px' }}>
           Guess which card is more expensive by clicking on it!
         </Typography>
+        <Typography variant="body1" style={{ textAlign: 'center', marginTop: '10px' }}>
+          (Please be patient, the API can take a few seconds to respond)
+          </Typography>
       </Container>
 
       <Button variant="contained" style={{ padding: '10px 20px', marginTop: '20px' }}
