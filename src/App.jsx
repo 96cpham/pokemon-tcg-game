@@ -122,6 +122,10 @@ function App() {
   return (
     <>
 
+    <Typography variant="h3" style={{ textAlign: 'center', marginTop: '20px' }}>
+      Pokemon TCG Price Guessing Game
+    </Typography>
+
     <Typography variant="h4" style={{ textAlign: 'center', marginTop: '20px' }}>
       Score : {score}
     </Typography>
