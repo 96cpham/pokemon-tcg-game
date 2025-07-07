@@ -1,3 +1,13 @@
+body, #root {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-image: url('/surfing-pikachu.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;

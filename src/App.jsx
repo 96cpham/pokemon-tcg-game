@@ -3,8 +3,11 @@ import Container from '@mui/material/Container'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import './App.css'
-import CardInfo from './CardInfo'
 import Typography from '@mui/material/Typography'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
 
 function App() {
   //keeps score of the game
@@ -21,6 +24,10 @@ function App() {
 // State variables to hold the card data for the left and right cards
   const [cardOneData, setCardOneData] = useState(null)
   const [cardTwoData, setCardTwoData] = useState(null)
+//holds the price of the cards
+  const [showPrices, setShowPrices] = useState(false)
+  const [guessMade, setGuessMade] = useState(false)
+  const [openWinDialog, setOpenWinDialog] = useState(false)
 
 
   const requestOptions = {
@@ -80,37 +87,83 @@ function App() {
       setCardTwoData(cardTwoData)
       setCardbackLeft(cardOneData.images.large)
       setCardbackRight(cardTwoData.images.large)
+      setGuessMade(false) // Reset guess state when new cards are fetched
+      setShowPrices(false) // Reset price visibility when new cards are fetched
     }
   }
+
+    
+  function getPrice(cardData) {
+    // Example: use cardData.cardmarket?.prices?.averageSellPrice or fallback
+    return cardData?.cardmarket?.prices?.averageSellPrice ?? Math.floor(Math.random() * 100) / 10 + 1
+  }
   
+    function handleGuess(which) {
+      if (!guessMade) {
+        setShowPrices(true)
+        setGuessMade(true)
+        const priceOne = getPrice(cardOneData)
+        const priceTwo = getPrice(cardTwoData)
+        if (
+          (which === 'left' && priceOne >= priceTwo) ||
+          (which === 'right' && priceTwo >= priceOne)
+        ) {
+          setScore(score + 10) 
+        }
+      }
+    }
+
+  useEffect(() => {
+    if (score >= 50) {
+      setOpenWinDialog(true)
+    }
+  }, [score])
 
   return (
     <>
 
     <Typography variant="h4" style={{ textAlign: 'center', marginTop: '20px' }}>
-      Score
+      Score : {score}
     </Typography>
 
-      <Container maxWidth="sm"  style={{ textAlign: 'center', marginTop: '20px' }}>
+      <Container maxWidth="sm" style={{ textAlign: 'center', marginTop: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
-          <Card sx={{ maxWidth: 250 }}>
+          <Card
+            sx={{ maxWidth: 250, cursor: guessMade ? 'default' : 'pointer', opacity: guessMade ? 0.8 : 1 }}
+            onClick={() => !guessMade && handleGuess('left')}
+            raised={!guessMade}
+          >
             <img src={cardbackLeft} alt="Card Back Left" style={{ width: '100%' }} />
             {cardOneData && (
               <div style={{ padding: '10px' }}>
                 <div><strong>Name:</strong> {cardOneData.name}</div>
                 <div><strong>Rarity:</strong> {cardOneData.rarity}</div>
                 <div><strong>Set:</strong> {cardOneData.set?.name}</div>
+                {showPrices && (
+                  <div style={{ color: 'green', marginTop: '10px' }}>
+                    <strong>Price:</strong> ${getPrice(cardOneData).toFixed(2)}
+                  </div>
+                )}
               </div>
             )}
           </Card>
 
-          <Card sx={{ maxWidth: 250 }}>
+          <Card
+            sx={{ maxWidth: 250, cursor: guessMade ? 'default' : 'pointer', opacity: guessMade ? 0.8 : 1 }}
+            onClick={() => !guessMade && handleGuess('right')}
+            raised={!guessMade}
+          >
             <img src={cardbackRight} alt="Card Back Right" style={{ width: '100%' }} />
             {cardTwoData && (
               <div style={{ padding: '10px' }}>
                 <div><strong>Name:</strong> {cardTwoData.name}</div>
                 <div><strong>Rarity:</strong> {cardTwoData.rarity}</div>
                 <div><strong>Set:</strong> {cardTwoData.set?.name}</div>
+                 {showPrices && (
+                  <div style={{ color: 'green', marginTop: '10px' }}>
+                    <strong>Price:</strong> ${getPrice(cardTwoData).toFixed(2)}
+                  </div>
+                )}
               </div>
             )}
           </Card>
@@ -123,6 +176,18 @@ function App() {
       >
         New Cards
       </Button>
+
+      <Dialog open={openWinDialog} onClose={() => setOpenWinDialog(false)}>
+        <DialogTitle>Congratulations!</DialogTitle>
+        <DialogContent>
+          You win!
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenWinDialog(false)} autoFocus>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }
